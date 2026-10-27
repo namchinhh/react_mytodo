@@ -1,0 +1,77 @@
+
+import { useState } from 'react';
+import './App.css';
+import TaskItem from './components/TaskItem';
+import TaskForm from './components/TaskForm';
+import TaskList from './components/TaskList';
+
+function App() {
+  const [tasks, setTasks] = useState([
+    { id: 1, title: 'Learn React', completed: false },
+    { id: 2, title: 'Build MyTodo', completed: false },
+    { id: 3, title: 'Fix MyTodo', completed: false },
+  ]);
+
+  function toggleTask(id) {
+    setTasks((currentTasks) =>
+      currentTasks.map((task) =>
+        task.id === id
+          ? { ...task, completed: !task.completed }
+          : task
+      )
+    );
+  }
+
+
+  function deleteTask(id) {
+    setTasks((currentTasks) =>
+      currentTasks.filter((task) => task.id !== id)
+    );
+  }
+
+  function isTaskExist(title) {
+    return tasks.some(
+      (task) =>
+        task.title.toLowerCase() === title.toLowerCase()
+    );
+  }
+
+  function addTask(title) {
+    const newTask = {
+      id: Date.now(),
+      title,
+      completed: false,
+    };
+
+    setTasks((currentTasks) => [...currentTasks, newTask]);
+  }
+
+  return (
+    <main className="app">
+      <h1>MyTodo</h1>
+      <TaskForm
+        onAddTask={addTask}
+        isTaskExist={isTaskExist}
+      />
+      <p>
+        Completed: {tasks.filter((task) => task.completed).length}
+        {' / '}
+        {tasks.length}
+      </p>
+
+      <p>
+        Uncompleted: {tasks.filter((task) => !task.completed).length}
+        {' / '}
+        {tasks.length}
+      </p>
+
+      <TaskList
+        tasks={tasks}
+        onToggle={toggleTask}
+        onDelete={deleteTask}
+      />
+    </main>
+  );
+}
+
+export default App;
