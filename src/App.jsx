@@ -1,16 +1,31 @@
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
-import TaskItem from './components/TaskItem';
 import TaskForm from './components/TaskForm';
 import TaskList from './components/TaskList';
 
 function App() {
-  const [tasks, setTasks] = useState([
-    { id: 1, title: 'Learn React', completed: false },
-    { id: 2, title: 'Build MyTodo', completed: false },
-    { id: 3, title: 'Fix MyTodo', completed: false },
-  ]);
+  const [tasks, setTasks] = useState(() => {
+    const savedTasks = localStorage.getItem('tasks');
+
+    if (savedTasks) {
+      try {
+        return JSON.parse(savedTasks);
+      } catch {
+        return [];
+      }
+    }
+
+    return [
+      { id: 1, title: 'Learn React', completed: false },
+      { id: 2, title: 'Build MyTodo', completed: false },
+      { id: 3, title: 'Fix MyTodo', completed: false },
+    ];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  }, [tasks]);
 
   function toggleTask(id) {
     setTasks((currentTasks) =>
