@@ -1,12 +1,11 @@
-
-import { useEffect, useState } from 'react';
 import './App.css';
 import TaskForm from './components/TaskForm';
 import TaskList from './components/TaskList';
 import useLocalStorage from './hooks/useLocalStorage';
+import isValidTasks from './utils/isValidTasks';
 
 function App() {
-  const [tasks, setTasks] = useLocalStorage('tasks', []);
+  const [tasks, setTasks] = useLocalStorage('tasks', [], isValidTasks);
 
   function toggleTask(id) {
     setTasks((currentTasks) =>

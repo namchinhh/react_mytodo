@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-function useLocalStorage(key, initialValue) {
+function useLocalStorage(key, initialValue, isValidValue = () => true) {
   // Chúng ta sẽ viết logic ở đây
   const [value, setValue] = useState(() => {
   // 1. Đọc dữ liệu theo key từ localStorage
@@ -8,7 +8,10 @@ function useLocalStorage(key, initialValue) {
   // 2. Nếu có dữ liệu, chuyển JSON string thành JavaScript value
   if (storedValue !== null) {
       try {
-        return JSON.parse(storedValue);
+        const parsedValue = JSON.parse(storedValue);
+        if (isValidValue(parsedValue)) {
+          return parsedValue;
+        }
       } catch {
         return initialValue;
       }
