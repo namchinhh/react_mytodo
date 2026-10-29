@@ -3,29 +3,10 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import TaskForm from './components/TaskForm';
 import TaskList from './components/TaskList';
+import useLocalStorage from './hooks/useLocalStorage';
 
 function App() {
-  const [tasks, setTasks] = useState(() => {
-    const savedTasks = localStorage.getItem('tasks');
-
-    if (savedTasks) {
-      try {
-        return JSON.parse(savedTasks);
-      } catch {
-        return [];
-      }
-    }
-
-    return [
-      { id: 1, title: 'Learn React', completed: false },
-      { id: 2, title: 'Build MyTodo', completed: false },
-      { id: 3, title: 'Fix MyTodo', completed: false },
-    ];
-  });
-
-  useEffect(() => {
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-  }, [tasks]);
+  const [tasks, setTasks] = useLocalStorage('tasks', []);
 
   function toggleTask(id) {
     setTasks((currentTasks) =>
