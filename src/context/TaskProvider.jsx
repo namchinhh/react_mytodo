@@ -1,16 +1,11 @@
 import { TaskContext } from './TaskContext';
-import useLocalStorage from '../hooks/useLocalStorage';
-import isValidTasks from '../utils/isValidTasks';
+import useTasksReducer from '../hooks/useTasksReducer';
 
 function TaskProvider({ children }) {
-    const [tasks, setTasks] = useLocalStorage(
-        'tasks',
-        [],
-        isValidTasks
-    );
+    const [tasks, dispatch] = useTasksReducer();
 
     return (
-        <TaskContext.Provider value={{ tasks, setTasks }}>
+        <TaskContext.Provider value={{ tasks, dispatch }}>
             {children}
         </TaskContext.Provider>
     );

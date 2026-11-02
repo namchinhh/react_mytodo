@@ -1,28 +1,17 @@
 import TaskForm from '../components/TaskForm';
 import TaskList from '../components/TaskList';
-import { useCallback } from 'react';
 import { useTasks } from '../context/TaskContext';
 
 function TodoPage() {
-    const { tasks, setTasks } = useTasks();
+    const { tasks, dispatch } = useTasks();
 
-    const toggleTask = useCallback((id) => {
-        setTasks((currentTasks) =>
-            currentTasks.map((task) =>
-                task.id === id
-                    ? { ...task, completed: !task.completed }
-                    : task
-            )
-        );
-    }, []);
+    const toggleTask = (id) => {
+        dispatch({ type: 'TOGGLE_TASK', payload: id });
+    };
 
-
-    const deleteTask = useCallback((id) => {
-        setTasks((currentTasks) =>
-            currentTasks.filter((task) => task.id !== id)
-        );
-    }, []);
-
+    const deleteTask = (id) => {
+        dispatch({ type: 'DELETE_TASK', payload: id });
+    };
 
     function isTaskExist(title) {
         return tasks.some(
@@ -38,7 +27,10 @@ function TodoPage() {
             completed: false,
         };
 
-        setTasks((currentTasks) => [...currentTasks, newTask]);
+        dispatch({
+            type: 'ADD_TASK',
+            payload: newTask
+        });
     }
 
     return (
