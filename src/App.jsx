@@ -1,70 +1,32 @@
 import './App.css';
-import TaskForm from './components/TaskForm';
-import TaskList from './components/TaskList';
-import useLocalStorage from './hooks/useLocalStorage';
-import isValidTasks from './utils/isValidTasks';
+import { lazy, Suspense } from 'react';
+import {
+  Routes,
+  Route,
+  Link
+} from 'react-router-dom';
+import TodoPage from './pages/TodoPage';
+import Settings from './pages/Settings';
+const Statistics = lazy(() => import('./pages/Statistics'));
 
 function App() {
-  const [tasks, setTasks] = useLocalStorage('tasks', [], isValidTasks);
 
-  function toggleTask(id) {
-    setTasks((currentTasks) =>
-      currentTasks.map((task) =>
-        task.id === id
-          ? { ...task, completed: !task.completed }
-          : task
-      )
-    );
-  }
-
-
-  function deleteTask(id) {
-    setTasks((currentTasks) =>
-      currentTasks.filter((task) => task.id !== id)
-    );
-  }
-
-  function isTaskExist(title) {
-    return tasks.some(
-      (task) =>
-        task.title.toLowerCase() === title.toLowerCase()
-    );
-  }
-
-  function addTask(title) {
-    const newTask = {
-      id: Date.now(),
-      title,
-      completed: false,
-    };
-
-    setTasks((currentTasks) => [...currentTasks, newTask]);
-  }
 
   return (
     <main className="app">
-      <h1>MyTodo</h1>
-      <TaskForm
-        onAddTask={addTask}
-        isTaskExist={isTaskExist}
-      />
-      <p>
-        Completed: {tasks.filter((task) => task.completed).length}
-        {' / '}
-        {tasks.length}
-      </p>
+      <nav>
+        <Link to="/">Todo</Link>
+        <Link to="/statistics">Statistics</Link>
+        <Link to="/settings">Settings</Link>
+      </nav>
 
-      <p>
-        Uncompleted: {tasks.filter((task) => !task.completed).length}
-        {' / '}
-        {tasks.length}
-      </p>
-
-      <TaskList
-        tasks={tasks}
-        onToggle={toggleTask}
-        onDelete={deleteTask}
-      />
+      <Suspense fallback={<p>Loading...</p>}>
+        <Routes>
+          <Route path="/" element={<TodoPage />} />
+          <Route path="/statistics" element={<Statistics />} />
+          <Route path="/settings" element={<Settings />} />
+        </Routes>
+      </Suspense>
     </main>
   );
 }

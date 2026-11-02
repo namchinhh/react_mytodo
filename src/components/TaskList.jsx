@@ -1,8 +1,9 @@
 
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import TaskItem from './TaskItem';
 
-function TaskList({ tasks, onToggle, onDelete }) {
+const TaskList = memo(function TaskList({ tasks, onToggle, onDelete }) {
+  console.log('TaskList rendered');
   const [filter, setFilter] = useState('all');
 
   const filteredTasks = tasks.filter((task) => {
@@ -58,6 +59,6 @@ function TaskList({ tasks, onToggle, onDelete }) {
       )}
     </section>
   );
-}
+});
 
 export default TaskList;
