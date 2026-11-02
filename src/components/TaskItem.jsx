@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 
 function TaskItem({ task, onToggle, onDelete }) {
   return (
@@ -10,7 +11,9 @@ function TaskItem({ task, onToggle, onDelete }) {
         />
 
         <span className={task.completed ? 'completed' : ''}>
-          {task.title}
+          <Link to={`/tasks/${task.id}`}>
+            {task.title}
+          </Link>
         </span>
       </label>
 

@@ -1,4 +1,7 @@
-function Statistics({ tasks }) {
+import { useTasks } from '../context/TaskContext';
+
+function Statistics() {
+    const { tasks } = useTasks();
     const completed = tasks.filter(task => task.completed).length;
     const active = tasks.length - completed;
 

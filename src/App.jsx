@@ -7,10 +7,10 @@ import {
 } from 'react-router-dom';
 import TodoPage from './pages/TodoPage';
 import Settings from './pages/Settings';
+import TaskDetails from './pages/TaskDetails';
 const Statistics = lazy(() => import('./pages/Statistics'));
 
 function App() {
-
 
   return (
     <main className="app">
@@ -23,6 +23,7 @@ function App() {
       <Suspense fallback={<p>Loading...</p>}>
         <Routes>
           <Route path="/" element={<TodoPage />} />
+          <Route path="/tasks/:id" element={<TaskDetails />} />
           <Route path="/statistics" element={<Statistics />} />
           <Route path="/settings" element={<Settings />} />
         </Routes>

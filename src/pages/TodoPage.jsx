@@ -1,13 +1,10 @@
-import TaskForm from './components/TaskForm';
-import TaskList from './components/TaskList';
-
-import useLocalStorage from './hooks/useLocalStorage';
-import isValidTasks from './utils/isValidTasks';
+import TaskForm from '../components/TaskForm';
+import TaskList from '../components/TaskList';
 import { useCallback } from 'react';
-
+import { useTasks } from '../context/TaskContext';
 
 function TodoPage() {
-    const [tasks, setTasks] = useLocalStorage('tasks', [], isValidTasks);
+    const { tasks, setTasks } = useTasks();
 
     const toggleTask = useCallback((id) => {
         setTasks((currentTasks) =>
