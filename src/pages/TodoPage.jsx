@@ -35,7 +35,6 @@ function TodoPage() {
         }
     }
 
-
     useEffect(() => {
         loadTasks();
     }, []);
