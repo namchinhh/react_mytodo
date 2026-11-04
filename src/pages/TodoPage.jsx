@@ -2,24 +2,13 @@ import { useState, useEffect } from 'react';
 import TaskForm from '../components/TaskForm';
 import TaskList from '../components/TaskList';
 import { useTasks } from '../context/TaskContext';
+import { getTasks } from '../services/taskService';
 
 function TodoPage() {
     // const { tasks, dispatch } = useTasks();
     const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
-    async function getTasks() {
-        const response = await fetch(
-            'https://jsonplaceholder.typicode.com/todos?_limit=5'
-        );
-
-        if (!response.ok) {
-            throw new Error(`HTTP Error: ${response.status}`);
-        }
-
-        return await response.json();
-    }
 
     async function loadTasks() {
         try {
