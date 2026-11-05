@@ -5,13 +5,15 @@ function TaskForm({ onAddTask, isTaskExist }) {
   const [inputValue, setInputValue] = useState('');
   const [error, setError] = useState('');
 
-  function handleSubmit(event) {
-    event.preventDefault();
+  const [submitting, setSubmitting] = useState(false);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
 
     const title = inputValue.trim();
 
     if (!title) {
-      setError('Task name is required.');
+      setError('Please enter a task title.');
       return;
     }
 
@@ -20,9 +22,16 @@ function TaskForm({ onAddTask, isTaskExist }) {
       return;
     }
 
-    onAddTask(title);
-    setInputValue('');
-    setError('');
+    try {
+      setError('');
+      setSubmitting(true);
+      await onAddTask(title);
+      setInputValue('');
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -34,7 +43,9 @@ function TaskForm({ onAddTask, isTaskExist }) {
         onChange={(event) => setInputValue(event.target.value)}
       />
 
-      <button type="submit">Add Task</button>
+      <button type="submit" disabled={submitting}>
+        Add Task
+      </button>
 
       {error && <p className="error">{error}</p>}
     </form>
