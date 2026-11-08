@@ -22,6 +22,7 @@ function App() {
 
       <Suspense fallback={<p>Loading...</p>}>
         <Routes>
+          <Route path="/login" element={<Login />} />
           <Route path="/" element={<TodoPage />} />
           <Route path="/tasks/:id" element={<TaskDetails />} />
           <Route path="/statistics" element={<Statistics />} />
