@@ -1,24 +1,25 @@
 import { useState, useEffect } from 'react';
 import TaskForm from '../components/TaskForm';
 import TaskList from '../components/TaskList';
-import { useTasks } from '../context/TaskContext';
-import { getTasks } from '../services/taskService';
+// import { useTasks } from '../context/TaskContext';
+import { getTasks, createTask, updateTask, deleteTask } from '../services/taskService';
 
 function TodoPage() {
     // const { tasks, dispatch } = useTasks();
     const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [loadError, setLoadError] = useState(null);
+    const [actionError, setActionError] = useState(null);
 
     async function loadTasks() {
         try {
             setLoading(true);
-            setError(null);
+            setLoadError(null);
 
             const data = await getTasks();
             setTasks(data);
         } catch (error) {
-            setError(error.message);
+            setLoadError(error.message);
         } finally {
             setLoading(false);
         }
@@ -28,13 +29,42 @@ function TodoPage() {
         loadTasks();
     }, []);
 
-    const toggleTask = (id) => {
-        // dispatch({ type: 'TOGGLE_TASK', payload: id });
-    };
+    async function toggleTask(id) {
+        setActionError(null);
 
-    const deleteTask = (id) => {
-        // dispatch({ type: 'DELETE_TASK', payload: id });
-    };
+        const task = tasks.find(task => task.id === id);
+
+        if (!task) return;
+
+        try {
+            const updatedTask = await updateTask(
+                id,
+                !task.completed
+            );
+
+            setTasks(prevTasks =>
+                prevTasks.map(task =>
+                    task.id === id ? updatedTask : task
+                )
+            );
+        } catch (error) {
+            setActionError(error.message);
+        }
+    }
+
+    async function handleDeleteTask(id) {
+        setActionError(null);
+
+        try {
+            await deleteTask(id);
+
+            setTasks(prevTasks =>
+                prevTasks.filter(task => task.id !== id)
+            );
+        } catch (error) {
+            setActionError(error.message);
+        }
+    }
 
     function isTaskExist(title) {
         return tasks.some(
@@ -43,26 +73,36 @@ function TodoPage() {
         );
     }
 
-    function addTask(title) {
+    async function addTask(title) {
+        setActionError(null);
+
         const newTask = {
-            id: Date.now(),
             title,
             completed: false,
         };
 
-        // dispatch({
-        //     type: 'ADD_TASK',
-        //     payload: newTask
-        // });
+        try {
+            const createdTask = await createTask(newTask);
+            setTasks(prevTasks => [createdTask, ...prevTasks]);
+        } catch (error) {
+            setActionError(error.message);
+            throw error;
+        }
     }
+
+    // dispatch({
+    //     type: 'ADD_TASK',
+    //     payload: newTask
+    // });
+
     if (loading) {
         return <p>Loading...</p>;
     }
 
-    if (error) {
+    if (loadError) {
         return (
             <>
-                <p>Error: {error}</p>
+                <p>Error: {loadError}</p>
                 <button onClick={loadTasks}>
                     Retry
                 </button>
@@ -73,6 +113,11 @@ function TodoPage() {
     return (
         <>
             <h1>MyTodo</h1>
+            {actionError && (
+                <p role="alert">
+                    Operation failed: {actionError}
+                </p>
+            )}
             <TaskForm
                 onAddTask={addTask}
                 isTaskExist={isTaskExist}
@@ -92,7 +137,7 @@ function TodoPage() {
             <TaskList
                 tasks={tasks}
                 onToggle={toggleTask}
-                onDelete={deleteTask}
+                onDelete={handleDeleteTask}
             />
         </>
     )
