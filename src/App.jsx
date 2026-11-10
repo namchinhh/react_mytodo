@@ -8,6 +8,7 @@ import {
 import TodoPage from './pages/TodoPage';
 import Settings from './pages/Settings';
 import TaskDetails from './pages/TaskDetails';
+import ProtectedRoute from './components/ProtectedRoute';
 const Statistics = lazy(() => import('./pages/Statistics'));
 
 function App() {
@@ -22,11 +23,14 @@ function App() {
 
       <Suspense fallback={<p>Loading...</p>}>
         <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/" element={<TodoPage />} />
+          <ProtectedRoute>
+            <TodoPage />
+          </ProtectedRoute>
           <Route path="/tasks/:id" element={<TaskDetails />} />
           <Route path="/statistics" element={<Statistics />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
       </Suspense>
     </main>

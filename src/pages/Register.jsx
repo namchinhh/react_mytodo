@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { signIn } from '../services/authService';
+import { signUp } from '../services/authService';
 
 function Register() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [submitting, setSubmitting] = useState(false);
+    const [confirmPassword, setConfirmPassword] = useState('');
+
 
     const navigate = useNavigate();
 
@@ -15,10 +17,21 @@ function Register() {
         setSubmitting(true);
         setError('');
         try {
-            await signIn(email.trim(), password);
-            navigate('/');
+            if (password !== confirmPassword) {
+                setError('Passwords do not match.');
+                setSubmitting(false);
+                return;
+            }
+            const data = await signUp(email.trim(), password);
+            if (data.session) {
+                navigate('/');
+            } else {
+                navigate('/login', {
+                    state: { message: 'Please check your email to confirm your account before logging in.' }
+                });
+            }
         } catch (error) {
-            setError(error.message || 'Failed to login. Please try again.');
+            setError(error.message || 'Failed to register. Please try again.');
         } finally {
             setSubmitting(false);
         }
@@ -26,7 +39,7 @@ function Register() {
 
     return (
         <form onSubmit={handleSubmit}>
-            <h1>Login</h1>
+            <h1>Register</h1>
 
             <input
                 type="email"
@@ -44,14 +57,23 @@ function Register() {
                 required
             />
 
+
+            <input
+                type="password"
+                placeholder="Confirm Password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+            />
+
             {error && <p role="alert">{error}</p>}
 
             <button type="submit" disabled={submitting}>
-                {submitting ? 'Logging in...' : 'Login'}
+                {submitting ? 'Registering...' : 'Register'}
             </button>
 
             <p>
-                Don't have an account? <Link to="/register">Register</Link>
+                Already have an account? <Link to="/login">Login</Link>
             </p>
         </form>
     );
