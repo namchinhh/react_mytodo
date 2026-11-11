@@ -9,6 +9,10 @@ import TodoPage from './pages/TodoPage';
 import Settings from './pages/Settings';
 import TaskDetails from './pages/TaskDetails';
 import ProtectedRoute from './components/ProtectedRoute';
+import GuestRoute from './components/GuestRoute';
+import Login from './pages/Login';
+import Register from './pages/Register';
+
 const Statistics = lazy(() => import('./pages/Statistics'));
 
 function App() {
@@ -23,14 +27,44 @@ function App() {
 
       <Suspense fallback={<p>Loading...</p>}>
         <Routes>
-          <ProtectedRoute>
-            <TodoPage />
-          </ProtectedRoute>
-          <Route path="/tasks/:id" element={<TaskDetails />} />
-          <Route path="/statistics" element={<Statistics />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <TodoPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/login"
+            element={
+              <GuestRoute>
+                <Login />
+              </GuestRoute>
+            }
+          />
+
+          <Route
+            path="/register"
+            element={
+              <GuestRoute>
+                <Register />
+              </GuestRoute>
+            }
+          />
+
+          <Route path="/statistics" element={
+            <ProtectedRoute>
+              <Statistics />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/settings" element={
+            <ProtectedRoute>
+              <Settings />
+            </ProtectedRoute>
+          } />
         </Routes>
       </Suspense>
     </main>
