@@ -1,14 +1,16 @@
 import { Link } from 'react-router-dom';
 import { useTasks } from '../context/TaskContext';
 
-function TaskItem({ task, onToggle, onDelete }) {
+function TaskItem({ task }) {
+  const { toggleTask, removeTask } = useTasks();
+
   return (
     <li>
       <label>
         <input
           type="checkbox"
           checked={task.completed}
-          onChange={() => onToggle(task.id)}
+          onChange={() => toggleTask(task.id, !task.completed)}
         />
 
         <span className={task.completed ? 'completed' : ''}>
@@ -18,7 +20,7 @@ function TaskItem({ task, onToggle, onDelete }) {
         </span>
       </label>
 
-      <button onClick={() => onDelete(task.id)}>
+      <button onClick={() => removeTask(task.id)}>
         Delete Task
       </button>
     </li>
