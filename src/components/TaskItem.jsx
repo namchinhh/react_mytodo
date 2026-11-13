@@ -3,6 +3,21 @@ import { useTasks } from '../context/TaskContext';
 
 function TaskItem({ task }) {
   const { toggleTask, removeTask } = useTasks();
+  async function handleToggle() {
+    try {
+      await toggleTask(task.id, !task.completed);
+    } catch (error) {
+      console.error('Failed to toggle task:', error);
+    }
+  }
+
+  async function handleDelete() {
+    try {
+      await removeTask(task.id);
+    } catch (error) {
+      console.error('Failed to delete task:', error);
+    }
+  }
 
   return (
     <li>
@@ -10,7 +25,7 @@ function TaskItem({ task }) {
         <input
           type="checkbox"
           checked={task.completed}
-          onChange={() => toggleTask(task.id, !task.completed)}
+          onChange={handleToggle}
         />
 
         <span className={task.completed ? 'completed' : ''}>
@@ -20,7 +35,7 @@ function TaskItem({ task }) {
         </span>
       </label>
 
-      <button onClick={() => removeTask(task.id)}>
+      <button onClick={handleDelete}>
         Delete Task
       </button>
     </li>
