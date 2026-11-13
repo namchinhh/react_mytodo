@@ -10,6 +10,7 @@ function TaskItem({ task }) {
 
   async function handleToggle() {
     try {
+      setError(null);
       setIsToggling(true);
       await toggleTask(task.id, !task.completed);
     } catch (error) {
@@ -22,6 +23,7 @@ function TaskItem({ task }) {
 
   async function handleDelete() {
     try {
+      setError(null);
       setIsDeleting(true);
       await removeTask(task.id);
     } catch (error) {
@@ -40,7 +42,7 @@ function TaskItem({ task }) {
           checked={task.completed}
           onChange={handleToggle}
           disabled={isToggling || isDeleting}
-        />
+        />{isToggling ? 'Updating...' : ''}
 
         <span className={task.completed ? 'completed' : ''}>
           <Link to={`/tasks/${task.id}`}>
@@ -50,7 +52,7 @@ function TaskItem({ task }) {
       </label>
 
       <button onClick={handleDelete} disabled={isToggling || isDeleting}>
-        Delete Task
+        {isDeleting ? 'Deleting...' : 'Delete Task'}
       </button>
       {error && (
         <p role="alert">{error}</p>
