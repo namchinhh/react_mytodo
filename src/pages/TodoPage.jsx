@@ -8,9 +8,7 @@ function TodoPage() {
     const {
         tasks,
         loading,
-        error,
-        toggleTask,
-        removeTask,
+        error
     } = useTasks();
 
     const [actionError, setActionError] = useState(null);
