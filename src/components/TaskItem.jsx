@@ -6,6 +6,7 @@ function TaskItem({ task }) {
   const { toggleTask, removeTask } = useTasks();
   const [isDeleting, setIsDeleting] = useState(false);
   const [isToggling, setIsToggling] = useState(false);
+  const [error, setError] = useState(null);
 
   async function handleToggle() {
     try {
@@ -13,6 +14,7 @@ function TaskItem({ task }) {
       await toggleTask(task.id, !task.completed);
     } catch (error) {
       console.error('Failed to toggle task:', error);
+      setError('Failed to toggle task: ' + error.message);
     } finally {
       setIsToggling(false);
     }
@@ -24,6 +26,7 @@ function TaskItem({ task }) {
       await removeTask(task.id);
     } catch (error) {
       console.error('Failed to delete task:', error);
+      setError('Failed to delete task: ' + error.message);
     } finally {
       setIsDeleting(false);
     }
@@ -49,6 +52,9 @@ function TaskItem({ task }) {
       <button onClick={handleDelete} disabled={isToggling || isDeleting}>
         Delete Task
       </button>
+      {error && (
+        <p role="alert">{error}</p>
+      )}
     </li>
   );
 }
