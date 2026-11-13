@@ -73,28 +73,6 @@ function TodoPage() {
         );
     }
 
-    async function addTask(title) {
-        setActionError(null);
-
-        const newTask = {
-            title,
-            completed: false,
-        };
-
-        try {
-            const createdTask = await createTask(newTask);
-            setTasks(prevTasks => [createdTask, ...prevTasks]);
-        } catch (error) {
-            setActionError(error.message);
-            throw error;
-        }
-    }
-
-    // dispatch({
-    //     type: 'ADD_TASK',
-    //     payload: newTask
-    // });
-
     if (loading) {
         return <p>Loading...</p>;
     }
@@ -119,7 +97,6 @@ function TodoPage() {
                 </p>
             )}
             <TaskForm
-                onAddTask={addTask}
                 isTaskExist={isTaskExist}
             />
             <p>

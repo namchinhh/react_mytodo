@@ -56,9 +56,12 @@ export async function deleteTask(id) {
     const { data, error } = await supabase
         .from('tasks')
         .delete()
-        .eq('id', id);
+        .eq('id', id)
+        .select()
+        .maybeSingle();
 
-    if (error) {
-        throw error;
-    }   
+    if (error) throw error;
+    if (!data) throw new Error('Task not found or access denied.');
+
+    return data;
 }

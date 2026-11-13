@@ -1,10 +1,11 @@
-
 import { useState } from 'react';
+import { useTasks } from '../context/TaskContext';
 
-function TaskForm({ onAddTask, isTaskExist }) {
+function TaskForm({ isTaskExist }) {
+  const { addTask } = useTasks();
+
   const [inputValue, setInputValue] = useState('');
   const [error, setError] = useState('');
-
   const [submitting, setSubmitting] = useState(false);
 
   async function handleSubmit(e) {
@@ -25,7 +26,9 @@ function TaskForm({ onAddTask, isTaskExist }) {
     try {
       setError('');
       setSubmitting(true);
-      await onAddTask(title);
+
+      await addTask(title);
+
       setInputValue('');
     } catch (error) {
       setError(error.message);
@@ -44,7 +47,7 @@ function TaskForm({ onAddTask, isTaskExist }) {
       />
 
       <button type="submit" disabled={submitting}>
-        Add Task
+        {submitting ? 'Adding...' : 'Add Task'}
       </button>
 
       {error && <p className="error">{error}</p>}
